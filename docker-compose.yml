@@ -1,0 +1,38 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0.17
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./db/mysql_data:/var/lib/mysql 
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: root
+    ports:
+      - "4306:3306"
+
+  web:
+    build: .
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - .:/app_name
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    tty: true
+    stdin_open: true
+    links:
+      - db
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  redis:
+    image: redis:5.0.5
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis:/data
+    command: redis-server --appendonly yes

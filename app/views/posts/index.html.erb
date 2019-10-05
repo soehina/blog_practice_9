@@ -1,0 +1,46 @@
+<% if flash[:notice] %>
+  <p class="alert"><%= notice %></p>
+<% end %>
+
+<div id="main">
+      <%= image_tag "main-img.jpg" %>
+</div>
+
+<div class="container">
+
+    <div id="article_wrap" class="row">
+
+      <div id="article_list" class="col-md-6">
+          
+        <div>
+            <% @posts.each do |post| %>
+                <h2 class="ctitle"><%= link_to(post.title,"/posts/#{post.id}") %></h2>
+                    <p><%= post.created_at.strftime('%Y/%m/%d') %></p>
+                    <% if user_signed_in? %>
+                      <p>
+                        <%= link_to '編集', edit_post_path(post) %>
+                        <%= link_to '削除', post, method: :delete, data: { confirm: 'Are you sure?' } %>
+                      </p>
+                    <% end %>
+            <% end %>
+        </div>
+
+      </div>
+
+      <div id="sidebar" class="col-md-6">
+          
+          <h2>★PV数ランキング</h2>
+          <ul>
+            <% @ranking_posts.each do |ranking_post| %>
+               <li>
+                  <%= link_to(ranking_post.title,"/posts/#{ranking_post.id}") %>
+                  (<%= REDIS.zscore("posts/daily/#{Date.today.to_s}", ranking_post.id).to_i %>PV)
+               </li>
+            <% end %>
+          </ul>
+
+      </div>
+      <div class="clear"></div>
+
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<p id="notice"><%= notice %></p>
+
+<div id="title">
+
+  <p><%= @post.created_at.strftime('%Y/%m/%d') %> 書いた人 ： <%= @post.user.email %></p>
+
+  <h1><%= @post.title %></h1>
+</div>
+<div id="article_wrap">
+  <p><%= @post.content %></p>
+</div>
